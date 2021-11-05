@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import service.ADB
@@ -18,9 +19,9 @@ import service.ADB
 fun DeviceList(
     modifier: Modifier = Modifier,
     list: List<ADB.Device>,
-    onTcpipClick: (ADB.Device.USBDevice) -> Unit,
-    onDisconnectClick: (ADB.Device.NetworkDevice) -> Unit,
-    onSaveClick: (ADB.Device.NetworkDevice) -> Unit
+    onTcpipClick: (ADB.USBDevice) -> Unit,
+    onDisconnectClick: (ADB.NetworkDevice) -> Unit,
+    onSaveClick: (ADB.NetworkDevice) -> Unit
 ) {
     Crossfade(list, Modifier.animateContentSize()) { list ->
         LazyColumn(
@@ -30,13 +31,13 @@ fun DeviceList(
         ) {
             items(list.size) {
                 when (val item = list[it]) {
-                    is ADB.Device.USBDevice -> {
-                        CommonDevice(Modifier.fillMaxWidth(), item.name) {
+                    is ADB.USBDevice -> {
+                        CommonDevice(Modifier.fillMaxWidth(), item.model, item.serial) {
                             onTcpipClick(item)
                         }
                     }
-                    is ADB.Device.NetworkDevice -> {
-                        NetworkDevice(Modifier.fillMaxWidth(), item.name, {
+                    is ADB.NetworkDevice -> {
+                        NetworkDevice(Modifier.fillMaxWidth(), item.model, item.serial, {
                             onSaveClick(item)
                         }) {
                             onDisconnectClick(item)
@@ -52,52 +53,63 @@ fun DeviceList(
 fun CommonDevice(
     modifier: Modifier = Modifier,
     deviceName: String,
+    serial: String,
     onTcpipClick: () -> Unit
 ) {
-    Card(
-        modifier = modifier.wrapContentHeight(),
-        backgroundColor = MaterialTheme.colors.secondary,
-        elevation = 8.dp
-    ) {
-        Row(modifier.padding(vertical = 8.dp, horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.Usb, "USB 设备")
-            Spacer(Modifier.width(16.dp))
-            Text(
-                modifier = Modifier.weight(1f),
-                text = deviceName
-            )
-            IconButton(onClick = onTcpipClick) {
-                Icon(Icons.Filled.Sensors, "Open TCPIP")
-            }
+    DeviceListItem(modifier, MaterialTheme.colors.secondary, icon = {
+        Icon(Icons.Filled.Usb, "USB 设备")
+    }, serial = serial, deviceName = deviceName, actions = {
+        IconButton(onClick = onTcpipClick) {
+            Icon(Icons.Filled.Sensors, "Open TCPIP")
         }
-    }
+    })
 }
 
 @Composable
 fun NetworkDevice(
     modifier: Modifier = Modifier,
     deviceName: String,
+    serial: String,
     onSaveClick: () -> Unit,
     onDisconnectClick: () -> Unit
 ) {
+    DeviceListItem(modifier, MaterialTheme.colors.secondaryVariant, icon = {
+        Icon(Icons.Filled.CellWifi, "网络设备")
+    }, serial = serial, deviceName = deviceName, actions = {
+        IconButton(onClick = onSaveClick) {
+            Icon(Icons.Filled.Save, "Save")
+        }
+        IconButton(onClick = onDisconnectClick) {
+            Icon(Icons.Filled.LinkOff, "Disconnect")
+        }
+    })
+}
+
+@Composable
+fun DeviceListItem(
+    modifier: Modifier = Modifier,
+    color: Color,
+    icon: @Composable RowScope.() -> Unit,
+    serial: String,
+    deviceName: String,
+    actions: @Composable RowScope.() -> Unit
+) {
     Card(
         modifier = modifier.wrapContentHeight(),
-        backgroundColor = MaterialTheme.colors.secondaryVariant,
+        backgroundColor = color,
         elevation = 8.dp
     ) {
         Row(modifier.padding(vertical = 8.dp, horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.CellWifi, "网络设备")
+            icon()
             Spacer(Modifier.width(16.dp))
-            Text(
-                modifier = Modifier.weight(1f),
-                text = deviceName
-            )
-            IconButton(onClick = onSaveClick) {
-                Icon(Icons.Filled.Save, "Save")
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = serial,
+                    style = MaterialTheme.typography.caption
+                )
+                Text(text = deviceName)
             }
-            IconButton(onClick = onDisconnectClick) {
-                Icon(Icons.Filled.LinkOff, "Disconnect")
-            }
+            actions()
         }
     }
 }

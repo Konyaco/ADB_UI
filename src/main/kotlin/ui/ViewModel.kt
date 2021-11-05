@@ -44,12 +44,17 @@ class ViewModel {
                     devices.value = result
                 } catch (e: Exception) {
                     refreshState.value = RefreshState.FAILED
+                    e.printStackTrace()
                     return@launch
                 }
                 refreshState.value = RefreshState.NORM
                 delay(3000)
             }
         }
+    }
+
+    fun connect(device: RememberedDevice) {
+        connect(device.host, device.port)
     }
 
     fun connect(address: String, port: Int) {
@@ -64,6 +69,7 @@ class ViewModel {
             } catch (e: Exception) {
                 delay(300)
                 connectState.value = ConnectState.FAILED
+                e.printStackTrace()
                 return@launch
             }
             delay(300)
@@ -72,9 +78,9 @@ class ViewModel {
         }
     }
 
-    fun disconnect(device: ADB.Device.NetworkDevice) {
+    fun disconnect(device: ADB.NetworkDevice) {
         scope.launch {
-            adb.disconnect(device)
+            device.disconnect()
             getDevices()
         }
     }
@@ -83,9 +89,9 @@ class ViewModel {
         scope.cancel()
     }
 
-    fun openTCPIP(device: ADB.Device.USBDevice) {
+    fun openTCPIP(device: ADB.USBDevice) {
         scope.launch {
-            adb.openTCPIP(device)
+            device.openTCPIP()
         }
     }
 
@@ -96,9 +102,9 @@ class ViewModel {
         }
     }
 
-    fun storeDevice(device: ADB.Device.NetworkDevice) {
+    fun storeDevice(device: ADB.NetworkDevice) {
         scope.launch {
-            preference.addDevice(RememberedDevice(device.name, device.host, device.port))
+            preference.addDevice(RememberedDevice(device.model, device.host, device.port))
             refreshRememberedDevices()
         }
     }

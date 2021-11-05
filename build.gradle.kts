@@ -19,6 +19,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation(compose.materialIconsExtended)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+    testImplementation(kotlin("test-junit5"))
 }
 
 tasks.withType<Test> {
@@ -33,7 +34,6 @@ compose.desktop {
             packageName = "ADB UI"
             vendor = "Konyaco"
             windows {
-//                iconFile.set(file("src/main/resources/icon.ico"))
                 perUserInstall = true
                 shortcut = true
                 upgradeUuid = "06D3C747-C4A8-4FF2-BA3A-26658F766550"

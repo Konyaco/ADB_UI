@@ -132,7 +132,7 @@ fun App(viewModel: ViewModel) {
             Text(text = "保存的设备")
         }
         CachedDeviceList(Modifier.fillMaxWidth(), rememberedDevices, onConnectClick = {
-            viewModel.connect(it.host, it.port)
+            viewModel.connect(it)
         }, onDeleteClick = {
             viewModel.deleteDevice(it)
         })

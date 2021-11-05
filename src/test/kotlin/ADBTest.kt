@@ -7,7 +7,7 @@ class ADBTest {
 
     @Test
     fun devices() {
-        println(adb.getDevices().map { it.name }.joinToString())
+        println(adb.getDevices().map { it.serial }.joinToString())
     }
 
     @Test

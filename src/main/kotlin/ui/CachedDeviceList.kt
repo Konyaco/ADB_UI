@@ -53,27 +53,14 @@ fun CachedDevice(
     onConnectClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
-    Card(
-        modifier = modifier.wrapContentHeight(),
-        backgroundColor = MaterialTheme.colors.secondaryVariant,
-        elevation = 8.dp
-    ) {
-        Row(modifier.padding(vertical = 8.dp, horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Filled.CellWifi, "网络设备")
-            Spacer(Modifier.width(16.dp))
-            Row(modifier = Modifier.weight(1f)) {
-                Text(name)
-                Spacer(Modifier.width(8.dp))
-                Text(host)
-                Spacer(Modifier.width(8.dp))
-                Text(port.toString())
-            }
-            IconButton(onClick = onDeleteClick) {
-                Icon(Icons.Filled.Delete, "Delete")
-            }
-            IconButton(onClick = onConnectClick) {
-                Icon(Icons.Filled.Link, "Connect")
-            }
+    DeviceListItem(modifier.wrapContentHeight(), MaterialTheme.colors.secondaryVariant, icon = {
+        Icon(Icons.Filled.CellWifi, "网络设备")
+    }, serial = "$host:$port", name, {
+        IconButton(onClick = onDeleteClick) {
+            Icon(Icons.Filled.Delete, "Delete")
         }
-    }
+        IconButton(onClick = onConnectClick) {
+            Icon(Icons.Filled.Link, "Connect")
+        }
+    })
 }
