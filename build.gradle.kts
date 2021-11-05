@@ -1,27 +1,24 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("jvm") version "1.4.32"
-    kotlin("plugin.serialization") version "1.4.30"
-    id("org.jetbrains.compose") version "0.4.0-build184"
+    kotlin("jvm") version "1.5.31"
+    kotlin("plugin.serialization") version "1.5.31"
+    id("org.jetbrains.compose") version "1.0.0-beta5"
 }
 
-group = "me.konyaco"
+group = "me.konyaco.adbui"
 version = "1.1.0"
 
 repositories {
     mavenCentral()
+    google()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
     implementation(compose.desktop.currentOs)
-    implementation("org.jetbrains.compose.material:material-icons-extended:0.4.0-build184")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
-
-    testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
+    implementation(compose.materialIconsExtended)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
 }
 
 tasks.withType<Test> {
@@ -30,14 +27,13 @@ tasks.withType<Test> {
 
 compose.desktop {
     application {
-        javaHome = System.getenv("JDK_15.0.1")
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Exe, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
             packageName = "ADB UI"
             vendor = "Konyaco"
             windows {
-                iconFile.set(file("src/main/resources/icon.ico"))
+//                iconFile.set(file("src/main/resources/icon.ico"))
                 perUserInstall = true
                 shortcut = true
                 upgradeUuid = "06D3C747-C4A8-4FF2-BA3A-26658F766550"

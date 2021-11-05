@@ -1,24 +1,17 @@
-import androidx.compose.desktop.Window
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
 import ui.App
 import ui.ViewModel
-import java.awt.image.BufferedImage
-import javax.imageio.ImageIO
 
-private fun loadImageResource(path: String): BufferedImage {
-    val resource = Thread.currentThread().contextClassLoader.getResource(path)
-    requireNotNull(resource) { "Resource $path not found" }
-    return resource.openStream().use(ImageIO::read)
-}
-
-private val appIcon = loadImageResource("icon.png")
-
-fun main() {
+fun main() = application {
     val viewModel = ViewModel()
-    Window("ADB UI", icon = appIcon) {
+
+    Window(onCloseRequest = ::exitApplication, title = "ADB UI", icon = painterResource("icon.png")) {
         MaterialTheme {
             Surface(
                 modifier = Modifier.fillMaxSize(),
